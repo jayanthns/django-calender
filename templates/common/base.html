@@ -1,0 +1,91 @@
+{% load staticfiles %}
+
+<html>
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/glyphicon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    {% block static_files %}
+    {% endblock %}
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}">MyCalender</a>
+        </div>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+            <li class="{% if nbar == 'home' %}active{% endif %}"><a href="{% url 'index' %}"><span
+                    class="glyphicon glyphicon-home"></span> Home</a></li>
+        </ul>
+            <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span> {{ user.username }}
+                        <span class="caret"></span>
+                        <!--<span>{% if user.is_interviewer %} Interviewer {% else %} Student {% endif %}</span>-->
+                    </a>
+                <ul class="dropdown-menu" style="margin-top: 10px">
+                  <div id="irc_pc" style="top: -10px; bottom: auto; left: 100px;"></div>
+                  <li class="margin5 {% if nbar == 'dashboard' %}active diableEvent{% endif %}">
+                    <a href="{% url 'dashboard' %}">
+                      <span class="glyphicon glyphicon-dashboard"></span> Dashboard
+                    </a>
+                  </li>
+                  <!-- Calender access only for interviewer -->
+                  {% if user.is_interviewer %}
+                  <li class="margin5 {% if nbar == 'calender' %}active diableEvent{% endif %}">
+                    <a href="{% url 'my_calender' %}">
+                      <span class="glyphicon glyphicon-calendar"></span> My Calender
+                    </a>
+                  </li>
+                  {% endif %}
+                  <li class="margin5">
+                    <a href="{% url 'logout' %}">
+                      <span class="glyphicon glyphicon-log-out"></span> Logout
+                    </a>
+                  </li>
+                </ul>
+                </li>
+            {% else %}
+                <li class="{% if nbar == 'signup' %}active diableEvent{% endif %}"><a href="{% url 'signup' %}"><span
+                        class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li class="{% if nbar == 'login' %}active diableEvent{% endif %}"><a href="{% url 'login' %}"><span
+                        class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            {% endif %}
+        </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <div class=" alert alert-{{ message.tags }}">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>{{ message.tags|title }}!</strong> {{ message }}
+        </div>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% block body %}
+  {% endblock %}
+</div>
+</body>
+</html>

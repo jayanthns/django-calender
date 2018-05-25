@@ -1,0 +1,65 @@
+{% extends 'common/base.html' %}
+{% load staticfiles %}
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block body %}
+
+  <div class="just-padding">
+    <h1 class="mySchedule">My Schedules</h1>
+    {% if False %}
+      <div class="list-group list-group-root well">
+      <!-- First Group -->
+      <a href="#item-1" class="list-group-item" data-toggle="collapse">
+        <i class="glyphicon glyphicon-chevron-right"></i>Item 1
+      </a>
+      <div class="list-group collapse" id="item-1">
+        <a href="#" class="list-group-item">Item 1.1</a>
+        <a href="#" class="list-group-item">Item 1.2</a>
+        <a href="#" class="list-group-item">Item 1.3</a>
+      </div>
+      <!-- First Group END -->
+      <!-- Second Group -->
+      <a href="#item-2" class="list-group-item" data-toggle="collapse">
+        <i class="glyphicon glyphicon-chevron-right"></i>Item 2
+      </a>
+      <div class="list-group collapse" id="item-2">
+        <a href="#" class="list-group-item">Item 2.1</a>
+        <a href="#" class="list-group-item">Item 2.2</a>
+        <a href="#" class="list-group-item">Item 2.3</a>
+      </div>
+      <!-- Second Group End -->
+
+      <!-- Third Group -->
+      <a href="#item-3" class="list-group-item" data-toggle="collapse">
+        <i class="glyphicon glyphicon-chevron-right"></i>Item 3
+      </a>
+      <div class="list-group collapse" id="item-3">
+        <a href="#" class="list-group-item">Item 3.1</a>
+        <a href="#" class="list-group-item">Item 3.2</a>
+        <a href="#" class="list-group-item">Item 3.3</a>
+      </div>
+      <!-- Third Group End -->
+    {% else %}
+      <h3>
+        <li class="noSchedules">No schedules found</li>
+      </h3>
+    {% endif %}
+    </div>
+    <a href="{% url 'my_calender' %}" class="btn btn-primary" role="button">
+      <span class="glyphicon glyphicon-calendar"></span> Go to your Calender
+    </a>
+  </div> <!-- /container -->
+  <script>
+    $(function () {
+
+      $('.list-group-item').on('click', function () {
+        $('.glyphicon', this)
+          .toggleClass('glyphicon-chevron-right')
+          .toggleClass('glyphicon-chevron-down');
+      });
+
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'common/base.html' %}
+{% load staticfiles %}
+{% block title %}
+  MyCalender
+{% endblock %}
+{% block static_files %}
+  <script src="{% static 'js/datepicker.min.js' %}"></script>
+  <script src="{% static 'js/my_calender.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/calender.css' %}">
+{% endblock %}
+{% block body %}
+  <div id="loading_div" class="hide">Loading&#8230;</div>
+  {% if not user_calender %}
+    <form id="createCalForm" action="{% url 'create_my_calender' %}" method="post">
+      {% csrf_token %}
+      <a href="{% url 'my_calender' %}" class="btn btn-primary" role="button" id="createCalBtn">
+        <span class="glyphicon glyphicon-calendar"></span> Create your Calender
+      </a>
+    </form>
+  {% else %}
+    <div class="row">
+      <div id="calender_place_id" class="col-sm-8">
+        <div class="mainYearMonth">
+          <div class="yearMonth">
+            <span class="glyphicon glyphicon-chevron-left monthChangeGlyphicon" style="float: left" onclick="previousMonth()"></span>
+            <span id="year_month_id">Some Date</span>
+            <span class="glyphicon glyphicon-chevron-right monthChangeGlyphicon" style="float: right" onclick="nextMonth()"></span>
+          </div>
+        </div>
+        <table class="table table-bordered" style="background-color: white">
+          <thead>
+          <tr>
+            <th class="centerText" width="14%">Sun</th>
+            <th class="centerText" width="14%">Mon</th>
+            <th class="centerText" width="14%">Tue</th>
+            <th class="centerText" width="14%">Wed</th>
+            <th class="centerText" width="14%">Thu</th>
+            <th class="centerText" width="14%">Fri</th>
+            <th class="centerText" width="14%">Sat</th>
+          </tr>
+          </thead>
+          <tbody id="calendarBody">
+          </tbody>
+        </table>
+      </div>
+      <div id="event_preview_id" class="cal-preview col-sm-4" style="padding: 0">
+        <div class="previewHeader" id="previewDispId">Preview</div>
+      </div>
+    </div>
+    <div>
+      <button>Toggle class "main" for p elements</button>
+      <p>This is a paragraph.</p>
+      <p>This is another paragraph.</p>
+      <p><b>Note:</b> Click the button more than once to see the toggle effect.</p>
+    </div>
+  {% endif %}
+  <script>
+    var c_month = '';
+    var c_year = '';
+    var selected_date = '';
+    var today = ''
+    function setPreviewDate(dispDate) {
+      $('#previewDispId').text(dispDate);
+    }
+    function generateCalender(data) {
+      //var weeks = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      //var only_days = Object.keys(data.days);
+      //var first_day = Object.values(data.days[0])[0];
+      //var start_pos = weeks.indexOf(first_day);
+      //console.log("BEFORE", only_days)
+      //var i = 0;
+      //while(i < start_pos) {
+      //only_days.unshift('-1');
+      //i++;
+      //}
+      //while(only_days.length % 7 != 0) {
+      //only_days.push('-1');
+      //}
+      //console.log("After", only_days);
+
+      //only_days.forEach(function(item) {
+
+
+      //});
+      selected_date = data.today;
+      today = data.today;
+      var days_list = data.days;
+      times = days_list.length / 7;
+      var tableBody = '';
+      for (var j = 0; j < times; j++) {
+        tableBody += '<tr>';
+        for (var i = j * 7; i < (j * 7) + 7; i++) {
+          tableBody += '<td id=day'+ days_list[i].day + days_list[i].extra+' class="' + days_list[i].styles + '" onclick="dateClicked('+days_list[i].day+','+data.month+','+data.year+')"><span>' + days_list[i].day + '</span></td>';
+        }
+        tableBody += '</tr>';
+      }
+      $('#calendarBody').html(tableBody);
+      $('#year_month_id').html((data.month_name) + ', ' + data.year);
+      setPreviewDate(selected_date);
+      c_month = parseInt(data.month);
+      c_year = parseInt(data.year)
+    }
+    function callCalDaysMethod(year, month) {
+      $.get("{% url 'get_calender_days' %}", {"year": year, 'month': month}, function (data, status) {
+        console.log(JSON.parse(data));
+        generateCalender(JSON.parse(data))
+      });
+    }
+    $(document).ready(function () {
+      {% if user_calender  %}
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        callCalDaysMethod(year, month)
+      {% endif %}
+    });
+    $('#createCalBtn').click(function (event) {
+      event.preventDefault();
+      $('#loading_div').removeClass('hide');
+      $('#loading_div').addClass('loading');
+      $('#createCalForm').submit()
+    });
+
+    function nextMonth() {
+      var year_inc = (c_month + 1) > 12 ? true : false;
+      if (year_inc) {
+        c_year += 1;
+        c_month = 1;
+      }
+      else {
+        c_month += 1
+      }
+      callCalDaysMethod(c_year, c_month)
+    }
+
+    function disablePrevious(year, month) {
+      var date = new Date();
+      if (date.getFullYear() >= year) {
+        if (date.getFullYear() == year) {
+          if (date.getMonth() + 1 >= month) {
+            return false;
+          }
+        }
+      }
+      else {
+        return true;
+      }
+    }
+
+    function previousMonth() {
+      var year_dec = (c_month - 1) < 1 ? true : false;
+      if (year_dec) {
+        c_year -= 1;
+        c_month = 12;
+      }
+      else {
+        c_month -= 1
+      }
+      callCalDaysMethod(c_year, c_month)
+    }
+
+    function dateClicked(day, month, year) {
+      selected_date = day+'/'+month+'/'+year;
+      $('td').removeClass('daySelected');
+      if(today != selected_date) {
+       $('#day'+day).addClass('daySelected');
+      }
+      setPreviewDate(selected_date);
+    }
+
+    $("button").click(function(){
+        $("p").toggleClass("main");
+    });
+  </script>
+  <style>
+    .main {
+        font-size: 120%;
+        color: red;
+    }
+  </style>
+{% endblock %}
