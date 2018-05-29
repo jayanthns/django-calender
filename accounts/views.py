@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from accounts.forms import LoginForm
+from accounts.models import Account
 
 
 def index(request):
@@ -48,3 +52,33 @@ class Signup(View):
     @staticmethod
     def get(request):
         return render(request, 'accounts/signup.html', {'nbar': 'signup'})
+
+    @staticmethod
+    def post(request):
+        password = request.POST['password']
+        account = Account(
+            username=request.POST['username'],
+            email=request.POST['email']
+        )
+        account.set_password(password)
+        account.save()
+        print(account.email)
+        print(password)
+        user = authenticate(username=account.email, password=password)
+        print(user)
+        if user:
+            login(request, user)
+            messages.success(request, 'Your account has created successfully!')
+            print("SUCCESS")
+            return redirect('dashboard', permanent=True)
+        print("FAILURE")
+        return render(request, 'accounts/signup.html', {'nbar': 'signup'})
+
+
+@csrf_exempt
+def check_email(request):
+    if request.method == "POST":
+        email = request.POST.get("email", None)
+        print("EMAIL", email)
+        user = Account.objects.filter(email__iexact=email.lower()).first()
+        return HttpResponse("false" if user else "true")

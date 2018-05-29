@@ -107,15 +107,15 @@ class Account(AbstractBaseUser):
 
     objects = AccountManager()
 
-
-def create_password(sender, **kwargs):
-    if kwargs['created']:
-        account = kwargs['instance']
-        if not account.is_superuser:
-            account.password = make_password(account.password)
-            account.save()
-        else:
-            pass
-
-
-post_save.connect(create_password, sender=Account)
+#
+# def create_password(sender, **kwargs):
+#     if kwargs['created']:
+#         account = kwargs['instance']
+#         if not account.is_superuser:
+#             account.password = make_password(account.password)
+#             account.save()
+#         else:
+#             pass
+#
+#
+# post_save.connect(create_password, sender=Account)

@@ -11,7 +11,7 @@
       <strong>Error!</strong> {{ msg }}
     </div>
   {% endif %}
-  <form class="form-signin" action="{% url 'login' %}" method="post">
+  <form class="form-signin" action="{% url 'login' %}" method="post" name="loginForm">
     {% csrf_token %}
     <h2 class="form-signin-heading">Please sign in</h2>
     <label for="inputEmail" class="sr-only">Email address</label>
@@ -31,15 +31,56 @@
       <div class="loader hide"></div>
     </button>
   </form>
-
+  <script src="{% static 'js/jquery.validate.min.js' %}"></script>
   <script>
-    $('button').click(function (event) {
+    /*$('button').click(function (event) {
       event.preventDefault();
       if ($('#inputEmail').val() && $('#inputPassword').val()) {
         $('.signInSpan').addClass('hide');
         $('.loader').removeClass('hide');
         $('.form-signin').submit();
       }
-    })
+    });*/
+
+    // Wait for the DOM to be ready
+    $(function () {
+      // Initialize form validation on the registration form.
+      // It has the name attribute "registration"
+      $("form[name='loginForm").validate({
+        // Specify validation rules
+        rules: {
+          // The key name on the left side is the name attribute
+          // of an input field. Validation rules are defined
+          // on the right side
+          email: {
+            required: true,
+            // Specify that email should be validated
+            // by the built-in "email" rule
+            email: true
+          },
+          password: {
+            required: true,
+            minlength: 8,
+            maxlength: 12
+          }
+        },
+        // Specify validation error messages
+        messages: {
+          email: "<p>Please enter valid email address</p>",
+          password: {
+            required: "<p>Please provide a password</p>",
+            minlength: "<p>Your password must be at least 5 characters long</p>",
+            maxlength: "<p>Your password must be at less than 12 characters long</p>"
+          }
+        },
+        // Make sure the form is submitted to the destination defined
+        // in the "action" attribute of the form when valid
+        submitHandler: function (form) {
+          $('.signInSpan').addClass('hide');
+          $('.loader').removeClass('hide');
+          form.submit();
+        }
+      })
+    });
   </script>
 {% endblock %}
