@@ -62,16 +62,11 @@ class Signup(View):
         )
         account.set_password(password)
         account.save()
-        print(account.email)
-        print(password)
         user = authenticate(username=account.email, password=password)
-        print(user)
         if user:
             login(request, user)
             messages.success(request, 'Your account has created successfully!')
-            print("SUCCESS")
             return redirect('dashboard', permanent=True)
-        print("FAILURE")
         return render(request, 'accounts/signup.html', {'nbar': 'signup'})
 
 
@@ -79,6 +74,5 @@ class Signup(View):
 def check_email(request):
     if request.method == "POST":
         email = request.POST.get("email", None)
-        print("EMAIL", email)
         user = Account.objects.filter(email__iexact=email.lower()).first()
         return HttpResponse("false" if user else "true")
