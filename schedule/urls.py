@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from views import dashboard
+from schedule.views import dashboard
 
 urlpatterns = [
     url(r'^dashboard/$', view=dashboard, name='dashboard'),

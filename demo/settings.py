@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+from django.contrib.messages import constants as message_constants
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0sqqk6_1nk@z^f5c@5_n5xp$rlf1s3e0wf9be3qh@3c1^(l*-*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [u'192.168.43.83', u'localhost', u'192.168.100.18', u'192.168.122.1', u'192.168.0.111']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -60,7 +62,7 @@ ROOT_URLCONF = 'demo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,10 +84,10 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'poc_demo2',  # Your db name
-        'HOST': 'localhost',  # url of db
-        'USER': 'poc_demo',  # db user
-        'PASSWORD': 'password',  # db password
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USERNAME"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
     }
 }
 
@@ -128,10 +130,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static1'),)
 
 
-from django.contrib.messages import constants as message_constants
 MESSAGE_LEVEL = message_constants.DEBUG
