@@ -2,7 +2,7 @@
 .idea/
 .vscode/*
 */migrations
-*/*.pyc
+*.pyc
 */settings.py
 __pycache__
 start_server.sh
