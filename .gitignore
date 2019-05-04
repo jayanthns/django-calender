@@ -1,8 +1,9 @@
-
+.vscode/*
 .idea/
 .vscode/*
 */migrations
 */*.pyc
 */settings.py
 __pycache__
-
+start_server.sh
+start_server_backup.sh
