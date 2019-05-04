@@ -11,7 +11,8 @@ from django.views import View
 
 from calender.models import Calender
 from django.contrib import messages
-import datetime, calendar
+import datetime
+import calendar
 import json
 
 WEEK_DAYS = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')
@@ -25,8 +26,13 @@ def get_days_dict(year, month):
     today = datetime.datetime.now()
     num_days = calendar.monthrange(year, month)[1]
     days = [datetime.date(year, month, day) for day in range(1, num_days + 1)]
-    days_dict = [{day.day: calendar.day_name[day.weekday()], 'disable': day.day < today.day or month < today.month} for
-                 day in days]
+    days_dict = [
+        {
+            day.day: calendar.day_name[day.weekday()],
+            'disable': day.day < today.day or month < today.month
+        }
+        for day in days
+    ]
     print(days_dict)
     dict = {
         'days': days_dict,
@@ -77,9 +83,15 @@ def modified_get_days_dict(year, month):
     days_dict = [
         {
             'styles': 'tdClass ' +
-                      ('today ' if (
-                          day.day == today.day and day.month == today.month and day.year == today.year) else '') +
-                      ('oldMonth ' if is_muted_month(today.year, today.month, year, month, today.day, day.day) else 'currentMonthDays '),
+            ('today ' if (
+                day.day == today.day and
+                day.month == today.month and
+                day.year == today.year
+            ) else '') +
+            ('oldMonth ' if is_muted_month(
+                today.year, today.month, year, month, today.day, day.day
+            ) else 'currentMonthDays '),
+
             'day': day.day,
             'week_day': calendar.day_name[day.weekday()],
             'extra': ''
@@ -87,7 +99,7 @@ def modified_get_days_dict(year, month):
             # 'active': day.day == today.day and day.month == today.month and day.year == today.year,
         }
         for day in days
-        ]
+    ]
     first_day = days_dict[0]['week_day']
     starts_at = WEEK_DAYS.index(first_day)
     if starts_at > 0:
@@ -105,7 +117,7 @@ def modified_get_days_dict(year, month):
             # 'active': False,
         }
         for day in p_days
-        ]
+    ]
     days_dict = p_days_dict + days_dict
 
     remains = 0
@@ -129,7 +141,7 @@ def modified_get_days_dict(year, month):
             # 'active': False,
         }
         for day in n_days
-        ]
+    ]
     days_dict += n_days_dict
     # print(days_dict)
 
@@ -138,7 +150,7 @@ def modified_get_days_dict(year, month):
         'year': year,
         'month': month,
         'month_name': MONTH_NAMES[month - 1],
-        'today': str(today.day)+'/'+str(today.month)+'/'+str(today.year)
+        'today': str(today.day) + '/' + str(today.month) + '/' + str(today.year)
     }
     return dict
 
@@ -151,7 +163,11 @@ class MyCalender(View):
                 user_calender = Calender.objects.get(user=request.user)
             except:
                 user_calender = None
-            data = {'nbar': 'calender', 'user_calender': user_calender, 'show_msg': False}
+            data = {
+                'nbar': 'calender',
+                'user_calender': user_calender,
+                'show_msg': False
+            }
             return render(request, 'calender/my_calender.html', data)
         else:
             return redirect('dashboard')
@@ -176,4 +192,8 @@ class CreateMyCalender(View):
 def get_calender_days(request):
     if request.method == 'GET':
         year, month = int(request.GET['year']), int(request.GET['month'])
-        return HttpResponse(json.dumps(modified_get_days_dict(year, month)), content_type='application/javascript; charset=utf8')
+
+        return HttpResponse(
+            json.dumps(modified_get_days_dict(year, month)),
+            content_type='application/javascript; charset=utf8'
+        )

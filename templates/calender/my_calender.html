@@ -47,12 +47,6 @@
         <div class="previewHeader" id="previewDispId">Preview</div>
       </div>
     </div>
-    <div>
-      <button>Toggle class "main" for p elements</button>
-      <p>This is a paragraph.</p>
-      <p>This is another paragraph.</p>
-      <p><b>Note:</b> Click the button more than once to see the toggle effect.</p>
-    </div>
   {% endif %}
   <script>
     var c_month = '';
@@ -102,7 +96,6 @@
     }
     function callCalDaysMethod(year, month) {
       $.get("{% url 'get_calender_days' %}", {"year": year, 'month': month}, function (data, status) {
-        console.log(JSON.parse(data));
         generateCalender(JSON.parse(data))
       });
     }

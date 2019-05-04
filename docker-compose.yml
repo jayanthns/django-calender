@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  # redis:
+  #   image: redis:alpine
+  #   container_name: djangob_redis
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - redisData:/data
+  db:
+    image: postgres:10.1-alpine
+    container_name: psql_django_boilerplate
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    environment:
+        POSTGRES_DB: poc_demo2
+        POSTGRES_USER: root
+        # POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+volumes:
+  postgres_data:
+  # redisData:
