@@ -7,3 +7,5 @@
 __pycache__
 start_server.sh
 start_server_backup.sh
+/static/*
+!/static/.gitkeep
