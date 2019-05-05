@@ -1,12 +1,13 @@
+.DS_Store
 .vscode/*
-.idea/
-.vscode/*
-*/migrations
+.idea/*
 *.pyc
 __pycache__
 start_server.sh
 start_server_backup.sh
 /static/*
 /log/*
+!/app/*/migrations/__init__.py
+/app/*/migrations/*
 !/static/.gitkeep
 !/log/.gitkeep
