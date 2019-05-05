@@ -26,11 +26,11 @@ fi
 
 #Exporting environment variables
 echo -e "\n\n-x-x-x-x-x-x- Exporting environment variables -x-x-x-x-x-x-\n";
-echo -e "demo.${settings}";
+echo -e ${settings};
 
 
 export PYTHONPATH=${project_path};
-export DJANGO_SETTINGS_MODULE="demo.${settings}"
+export DJANGO_SETTINGS_MODULE=${settings}
 export HOST_NAME=${host_addr}
 export DB_NAME=${dbname}
 export DB_USERNAME=${psql_username}
@@ -135,7 +135,7 @@ then
 fi
 
 echo -e "\n\n-x-x-x-x-x-x- Reloading gunicorn -x-x-x-x-x-x-\n"
-sudo -E -H ${env}/bin/gunicorn  --keep-alive ${keep_alive_timeout} --timeout ${timeout} --graceful-timeout ${graceful_timeout} --workers ${worker_count:-"1"} --bind 127.0.0.1:${gunicorn_port_no} demo.wsgi:application --access-logfile /var/log/gunicorn-access.log --error-logfile /var/log/gunicorn-error.log --log-level DEBUG   --reload &
+sudo -E -H ${env}/bin/gunicorn  --keep-alive ${keep_alive_timeout} --timeout ${timeout} --graceful-timeout ${graceful_timeout} --workers ${worker_count:-"1"} --bind 127.0.0.1:${gunicorn_port_no} ${wsgi_app} --access-logfile /var/log/gunicorn-access.log --error-logfile /var/log/gunicorn-error.log --log-level DEBUG   --reload &
 
 echo -e "\n\n-x-x-x-x-x-x- Reloading nginx -x-x-x-x-x-x-\n"
 sudo nginx || true
