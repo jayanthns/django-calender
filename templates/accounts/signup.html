@@ -1,73 +1,77 @@
 {% extends 'common/base.html' %}
 {% load staticfiles %}
 {% block title %}
-    Login
+Login
 {% endblock %}
 
 {% block body %}
-  <form class="form-signin" name="signupForm" action="{% url 'signup' %}" method="post">
-    {% csrf_token %}
-    <h2 class="form-signin-heading">Please sign up</h2>
-    <label for="input" class="sr-only">Username</label>
-    <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" required autofocus>
-    <br>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
-      <br>
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-      <span class="signInSpan">Sign Up</span>
-      <div class="loader hide"></div>
-    </button>
-  </form>
-  <script src="{% static 'js/jquery.validate.min.js' %}"></script>
-  <script>
-    $(function () {
-      // Initialize form validation on the registration form.
-      // It has the name attribute "registration"
-      $("form[name='signupForm").validate({
-        // Specify validation rules
-        rules: {
-          // The key name on the left side is the name attribute
-          // of an input field. Validation rules are defined
-          // on the right side
-          username: "required",
-          email: {
-            required: true,
-            // Specify that email should be validated
-            // by the built-in "email" rule
-            email: true,
-            remote: {
-              url: "{% url 'check_email' %}",
-              type: "post"
-            }
-          },
-          password: {
-            required: true,
-            minlength: 8
+<form class="form-signin" name="signupForm" action="{% url 'signup' %}" method="post">
+  {% csrf_token %}
+  <h2 class="form-signin-heading">Please sign up</h2>
+  <label for="input" class="sr-only">Username</label>
+  <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" required autofocus>
+  <br>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+  <br>
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" value="is-interviewer" name="is_interviewer"> Is Interviewer
+    </label>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">
+    <span class="signInSpan">Sign Up</span>
+    <div class="loader hide"></div>
+  </button>
+</form>
+<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+<script>
+  $(function () {
+    // Initialize form validation on the registration form.
+    // It has the name attribute "registration"
+    $("form[name='signupForm").validate({
+      // Specify validation rules
+      rules: {
+        // The key name on the left side is the name attribute
+        // of an input field. Validation rules are defined
+        // on the right side
+        username: "required",
+        email: {
+          required: true,
+          // Specify that email should be validated
+          // by the built-in "email" rule
+          email: true,
+          remote: {
+            url: "{% url 'check_email' %}",
+            type: "post"
           }
         },
-        // Specify validation error messages
-        messages: {
-          email: {
-            required: "<p>Please enter valid email address</p>",
-            remote: "<p>Account with this email already exists. Please provide another email id.</p>"
-          },
-          password: {
-            required: "<p>Please provide a password</p>",
-            minlength: "<p>Your password must be at least 8 characters long</p>"
-          }
-        },
-        // Make sure the form is submitted to the destination defined
-        // in the "action" attribute of the form when valid
-        submitHandler: function (form) {
-          $('.signInSpan').addClass('hide');
-          $('.loader').removeClass('hide');
-          form.submit();
+        password: {
+          required: true,
+          minlength: 8
         }
-      })
-    });
-  </script>
+      },
+      // Specify validation error messages
+      messages: {
+        email: {
+          required: "<p>Please enter valid email address</p>",
+          remote: "<p>Account with this email already exists. Please provide another email id.</p>"
+        },
+        password: {
+          required: "<p>Please provide a password</p>",
+          minlength: "<p>Your password must be at least 8 characters long</p>"
+        }
+      },
+      // Make sure the form is submitted to the destination defined
+      // in the "action" attribute of the form when valid
+      submitHandler: function (form) {
+        $('.signInSpan').addClass('hide');
+        $('.loader').removeClass('hide');
+        form.submit();
+      }
+    })
+  });
+</script>
 {% endblock %}

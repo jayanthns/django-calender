@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-
-# Create your views here.
-from django.utils.decorators import method_decorator
-from django.views import View
-
-from app.calender.models import Calender
-from django.contrib import messages
 import datetime
 import calendar
 import json
+
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.contrib import messages
+
+from common.util.logger import get_custom_logger
+
+from app.calender.models import Calender
+
+log = get_custom_logger()
+
+# Create your views here.
+
 
 WEEK_DAYS = ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')
 MONTH_NAMES = (
@@ -33,7 +40,7 @@ def get_days_dict(year, month):
         }
         for day in days
     ]
-    print(days_dict)
+    log.info(days_dict)
     dict = {
         'days': days_dict,
         'year': year,
@@ -106,7 +113,7 @@ def modified_get_days_dict(year, month):
         p_days = p_days[-starts_at:]
     else:
         p_days = []
-    print(p_days)
+    log.info(p_days)
     p_days_dict = [
         {
             'styles': 'tdClass muted',
@@ -123,7 +130,6 @@ def modified_get_days_dict(year, month):
     remains = 0
 
     if not days_dict.__len__() % 7 == 0:
-        print("NO COMPLETED")
         remains = 7 - (days_dict.__len__() % 7)
 
     if remains > 0:
@@ -143,7 +149,6 @@ def modified_get_days_dict(year, month):
         for day in n_days
     ]
     days_dict += n_days_dict
-    # print(days_dict)
 
     dict = {
         'days': days_dict,

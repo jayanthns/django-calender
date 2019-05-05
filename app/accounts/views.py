@@ -33,14 +33,13 @@ class Login(View):
 
     @staticmethod
     def get(request):
-        if request.user.is_authenticated():
+        if request.user and request.user.is_authenticated:
             return redirect('dashboard', permanent=True)
         return render(request, 'accounts/login.html',
                       {'nbar': 'login', 'error': False})
 
     @staticmethod
     def post(request):
-        print("BEFORE.................")
         form = LoginForm(request.POST)
         if not form.is_valid():
             return render(
@@ -76,10 +75,13 @@ class Signup(View):
 
     @staticmethod
     def post(request):
+        log.info(request.POST)
         password = request.POST['password']
+        is_interviewer = True if request.POST.get('is_interviewer', None) else False
         account = Account(
             username=request.POST['username'],
-            email=request.POST['email']
+            email=request.POST['email'],
+            is_interviewer=is_interviewer
         )
         account.set_password(password)
         account.save()
